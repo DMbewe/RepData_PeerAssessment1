@@ -1,3 +1,4 @@
+[PA1_template.docx](https://github.com/DMbewe/RepData_PeerAssessment1/files/7117825/PA1_template.docx)
 [PA1_template.md](https://github.com/DMbewe/RepData_PeerAssessment1/files/7117752/PA1_template.md)
 ---
 title: "Reproducible Research: Peer Assessment 1"
