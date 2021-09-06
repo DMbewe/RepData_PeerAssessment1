@@ -7,22 +7,98 @@ output:
   html_document:
     keep_md: true
 ---
+---
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+```{r}
+if (!file.exists("activity.csv") ) {
+        unzip("activity.zip")
+}
+data <- read.csv("activity.csv", header = TRUE)
+maj_data <- na.omit(data)
+```
 
+```{r}
+dailysteps <- aggregate(maj_data$steps, by = list(Steps.Date = maj_data$date), FUN = "sum")
+```
 
-## Loading and preprocessing the data
+```{r}
+hist(dailysteps$x, col = "purple", 
+     breaks = 20,
+     main = "Total number of steps taken each day",
+     xlab = "Number of steps per day")
+```
+```{r}
+meansteps <- mean(dailysteps[,2])
+print (meansteps)
+```
+```{r}
+mediansteps <- median(dailysteps[,2])
+print (mediansteps)
+```
+```{r}
+averageday <- aggregate(maj_data$steps, 
+                          by = list(Interval = maj_data$interval), 
+                          FUN = "mean")
+plot(averageday$Interval, averageday$x, type = "l", 
+     main = "Average daily activity pattern", 
+     ylab = "Avarage number of steps taken", 
+     xlab = "5-min intervals")
+```
+```{r}
+interval_row <- which.max(averageday$x)
+max_interval <- averageday[interval_row,1]
+print (max_interval)
+```
+```{r}
+NA_number <- length(which(is.na(data$steps)))
+print (NA_number)
+```
+```{r}
+library(Hmisc)
+```
+```{r}
+data2 <- data
+data2$steps <- impute(data$steps, fun=mean)
+```
 
+```{r}
+dailystepsnoNA <- aggregate(data2$steps, 
+                                by = list(Steps.Date = data2$date), 
+                                FUN = "sum")
+hist(dailystepsnoNA$x, col = "purple", 
+     breaks = 20,
+     main = "Total number of steps taken each day (filled data)",
+     xlab = "Number of steps per day")
+```
+```{r}
+meanstepsnoNA <- mean(dailystepsnoNA[,2])
+print (dailystepsnoNA)
+```
+```{r}
+medianstepsnoNA <- median(dailystepsnoNA[,2])
+print (medianstepsnoNA)
+```
+```{r}
+data2$date <- as.Date(data2$date)
+data2$weekday <- weekdays(data2$date)
+data2$day_type <- ifelse(data2$weekday=="суббота" |
+data2$weekday=="воскресенье","Weekend","Weekday")
+data2$day_type <- factor(data2$day_type)
 
+```
 
-## What is mean total number of steps taken per day?
+```{r}
+day_types_data <- aggregate(steps ~ interval + day_type, data=data2, mean)
 
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
+library(ggplot2)
+ggplot(day_types_data, aes(interval, steps)) + 
+        geom_line() + 
+        facet_grid(day_type ~ .) +
+        xlab("5-minute intervals") + 
+        ylab("Avarage number of steps taken") +
+        ggtitle("Weekdays and weekends activity patterns")
+```
