@@ -1,3 +1,4 @@
+[activity.zip](https://github.com/DMbewe/RepData_PeerAssessment1/files/7117750/activity.zip)
 [README.md](https://github.com/DMbewe/RepData_PeerAssessment1/files/7117748/README.md)
 ## Introduction
 
